@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibraVault – Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="dashboard-page">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="brand-icon-sm"><i class="fas fa-book-open"></i></div>
+        <span class="brand-name-sm">LibraVault</span>
+        <span class="admin-tag">Admin</span>
+      </div>
+      <nav class="header-nav">
+        <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Books</a>
+        <a href="admin.html" class="nav-link active"><i class="fas fa-cog"></i> Admin</a>
+      </nav>
+      <div class="header-user">
+        <div class="user-badge">
+          <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
+          <div class="user-info">
+            <span class="user-name" id="adminName">Admin</span>
+            <span class="user-plan admin-plan">Admin</span>
+          </div>
+        </div>
+        <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- STATS CARDS -->
+    <section class="admin-stats">
+      <div class="stat-card">
+        <div class="stat-icon books"><i class="fas fa-book"></i></div>
+        <div class="stat-info"><span class="stat-num" id="sTotalBooks">–</span><span class="stat-label">Total
+            Books</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon users"><i class="fas fa-users"></i></div>
+        <div class="stat-info"><span class="stat-num" id="sTotalUsers">–</span><span class="stat-label">Members</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon borrowed"><i class="fas fa-bookmark"></i></div>
+        <div class="stat-info"><span class="stat-num" id="sBorrowed">–</span><span class="stat-label">Borrowed</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon overdue"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="stat-info"><span class="stat-num" id="sOverdue">–</span><span class="stat-label">Overdue</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon paid"><i class="fas fa-crown"></i></div>
+        <div class="stat-info"><span class="stat-num" id="sPaid">–</span><span class="stat-label">Paid Users</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN TABS -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('books')"><i class="fas fa-book"></i> Manage Books</button>
+      <button class="admin-tab" onclick="showAdminTab('users')"><i class="fas fa-users"></i> Manage Users</button>
+    </div>
+
+    <!-- MANAGE BOOKS -->
+    <section class="admin-section" id="adminBooks">
+      <div class="section-header-row">
+        <h3 class="section-title">📚 All Books</h3>
+        <button class="btn-primary sm" onclick="openAddBook()"><i class="fas fa-plus"></i> Add Book</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="booksTable">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Genre</th>
+              <th>Available</th>
+              <th>Total</th>
+              <th>Plan</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="booksTableBody">
+            <tr>
+              <td colspan="7" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MANAGE USERS -->
+    <section class="admin-section hidden" id="adminUsers">
+      <div class="section-header-row">
+        <h3 class="section-title">👥 All Members</h3>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Plan</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr>
+              <td colspan="6" class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><i class="fas fa-book-open"></i> <strong>LibraVault</strong> Admin Panel</div>
+      <p class="footer-copy">© 2025 LibraVault. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ADD BOOK MODAL -->
+  <div class="modal-overlay hidden" id="addBookModal">
+    <div class="modal-card wide-modal">
+      <button class="modal-close" onclick="closeModal('addBookModal')"><i class="fas fa-times"></i></button>
+      <h3><i class="fas fa-plus"></i> Add New Book</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="newTitle" placeholder="Book title" />
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input type="text" id="newAuthor" placeholder="Author name" />
+        </div>
+        <div class="form-group">
+          <label>ISBN</label>
+          <input type="text" id="newIsbn" placeholder="ISBN number" />
+        </div>
+        <div class="form-group">
+          <label>PDF URL</label>
+          <input type="text" id="newPdfUrl" placeholder="https://example.com/book.pdf" />
+        </div>
+        <div class="form-group">
+          <label>Genre</label>
+          <select id="newGenre">
+            <option value="Fiction">Fiction</option>
+            <option value="Technology">Technology</option>
+            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="Fantasy">Fantasy</option>
+            <option value="Dystopian">Dystopian</option>
+            <option value="Non-Fiction">Non-Fiction</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Total Copies</label>
+          <input type="number" id="newCopies" value="1" min="1" />
+        </div>
+        <div class="form-group">
+          <label>Published Year</label>
+          <input type="number" id="newYear" placeholder="2024" />
+        </div>
+        <div class="form-group">
+          <label>Pages</label>
+          <input type="number" id="newPages" placeholder="256" />
+        </div>
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea id="newDesc" placeholder="Brief description…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="newIsPaid" />
+            <span>Paid Plan Only</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="addBook()"><i class="fas fa-save"></i> Save Book</button>
+        <button class="btn-secondary" onclick="closeModal('addBookModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+
+</html>
